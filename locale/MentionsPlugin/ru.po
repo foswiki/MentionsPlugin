@@ -1,0 +1,60 @@
+# Foswiki translation for Russian
+# Translators:
+#   Foswiki:Main/SergejZnamenskij, 2006
+#   Foswiki:Main/AndreyTkachenko, 2006 (Coordinator)
+#   Foswiki:Main/SergeyJSinx, 2006
+#   Foswiki:Main/AlexTananaev, 2007
+#   Foswiki:Main/AndrewPantyukhin, 2009
+msgid ""
+msgstr ""
+"Project-Id-Version: ru $Id\n"
+"Report-Msgid-Bugs-To: foswiki-svn@lists.sourceforge.net\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2010-09-05 10:53+0000\n"
+"Last-Translator: Ivan Pesin <sp_ipesin@n-ix.com.ua>\n"
+"Language-Team: Russian Team <svz@latex.pereslavl.ru, falko-mail@inbox.ru, "
+"jsinx@front.ru, alex@amibel.ru, infofarmer@FreeBSD.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Pootle 1.1.0\n"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:141
+#: data/System/MentionsPluginNotifyTemplate.txt:89
+msgid "Best Regards, Your Wiki Team."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:140
+#: data/System/MentionsPluginNotifyTemplate.txt:88
+#, fuzzy
+msgid "Hello"
+msgstr "Привет %1"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:102
+#: data/System/MentionsPluginNotifyTemplate.txt:53
+#, fuzzy
+msgid "See %1"
+msgstr "Имя пользователя"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:118
+#: data/System/MentionsPluginNotifyTemplate.txt:69
+msgid "We would like to inform you that %1 mentioned you in %2."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:108
+#: data/System/MentionsPluginNotifyTemplate.txt:59
+msgid "We would like to inform you that %1 mentioned you in '%2' of %3."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:127
+#: data/System/MentionsPluginNotifyTemplate.txt:78
+msgid "We would like to inform you that %1 mentioned you in a comment of %2."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:139
+#: data/System/MentionsPluginNotifyTemplate.txt:18
+msgid "You have been mentioned in %1"
+msgstr ""

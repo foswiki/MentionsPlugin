@@ -1,0 +1,12 @@
+data/**/*,v
+pub/**/*gz
+locale/**/*~
+locale/**/*.mo
+/MentionsPlugin.zip
+/MentionsPlugin_installer.pl
+/MentionsPlugin.md5
+/MentionsPlugin.sha1
+/MentionsPlugin.tgz
+/MentionsPlugin.txt
+/MentionsPlugin_installer
+

@@ -1,0 +1,56 @@
+# Foswiki translation for French (français)
+# Translators:
+#   Foswiki:Main/BenVoui, 2005, 2006, 2007.
+#   Foswiki:Main/RaulFRodriguez, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"Report-Msgid-Bugs-To: foswiki-developers@lists.foswiki.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2018-01-10 08:58+0200\n"
+"Last-Translator: Raul F Rodriguez <raulfrodriguez10@gmail.com>\n"
+"Language-Team: French <http://translate.foswiki.org/projects/foswiki/"
+"distribution-master/fr/>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.4\n"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:141
+#: data/System/MentionsPluginNotifyTemplate.txt:89
+msgid "Best Regards, Your Wiki Team."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:140
+#: data/System/MentionsPluginNotifyTemplate.txt:88
+#, fuzzy
+msgid "Hello"
+msgstr "Bonjour, %1"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:102
+#: data/System/MentionsPluginNotifyTemplate.txt:53
+#, fuzzy
+msgid "See %1"
+msgstr "Quitter %1"
+
+#: data/System/MentionsPluginNotifyTemplate.txt:118
+#: data/System/MentionsPluginNotifyTemplate.txt:69
+msgid "We would like to inform you that %1 mentioned you in %2."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:108
+#: data/System/MentionsPluginNotifyTemplate.txt:59
+msgid "We would like to inform you that %1 mentioned you in '%2' of %3."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:127
+#: data/System/MentionsPluginNotifyTemplate.txt:78
+msgid "We would like to inform you that %1 mentioned you in a comment of %2."
+msgstr ""
+
+#: data/System/MentionsPluginNotifyTemplate.txt:139
+#: data/System/MentionsPluginNotifyTemplate.txt:18
+msgid "You have been mentioned in %1"
+msgstr ""

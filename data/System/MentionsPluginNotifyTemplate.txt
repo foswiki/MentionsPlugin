@@ -1,0 +1,139 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1701710268" format="1.1" reprev="8" version="10"}%
+%META:TOPICPARENT{name="MentionsPlugin"}%
+%{ WARNING: Please do not modify this template. Create a skin overlay instead. }%
+
+%TMPL:DEF{"mentions::notify"}%%TMPL:P{"mentions::notify::init"}%%TMPL:P{"mentions::notify::header"}%%TMPL:P{"mentions::notify::body"}%%TMPL:END%
+
+%{ header definitions }%
+%TMPL:DEF{"mentions::notify::header"}%%{}%
+%TMPL:P{"mentions::notify::header::from"}%
+%TMPL:P{"mentions::notify::header::to"}%
+%TMPL:P{"mentions::notify::header::subject"}%
+%TMPL:P{"mentions::notify::header::priority"}%
+%TMPL:P{"mentions::notify::header::misc"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::header::from"}%From: %WIKIWEBMASTERNAME% <%WIKIWEBMASTER%>%TMPL:END%
+%TMPL:DEF{"mentions::notify::header::to"}%To: %MENTION_EMAIL%%TMPL:END%
+%TMPL:DEF{"mentions::notify::header::subject"}%Subject: %WIKITOOLNAME% - %GETTOPICTITLE{"%WEB%.%HOMETOPIC%"}% - %TRANSLATE{"You have been mentioned in [_1]" args="%GETTOPICTITLE{"%WEB%.%TOPIC%"}%"}%%TMPL:END%
+%TMPL:DEF{"mentions::notify::header::priority"}%X-Priority: 1%TMPL:END%
+%TMPL:DEF{"mentions::notify::header::misc"}%Auto-Submitted: auto-generated
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=_=0i0k0i0w0s0o0fXuOi0E0A"
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::body::text::header"}%
+This is a multi-part message in MIME format.
+--=_=0i0k0i0w0s0o0fXuOi0E0A
+Content-Type: text/plain; charset=%CHARSET%
+Content-Transfer-Encoding: 8bit
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::body::html::header"}%
+--=_=0i0k0i0w0s0o0fXuOi0E0A
+Content-Type: text/html; charset=%CHARSET%
+Content-Transfer-Encoding: 8bit
+%TMPL:END%
+
+%{ body definitions }%
+%TMPL:DEF{"mentions::notify::body"}%%TMPL:P{"mentions::notify::body::text::header"}%
+%TMPL:P{"mentions::notify::body::text"}%
+%TMPL:P{"mentions::notify::body::html::header"}%
+%TMPL:P{"mentions::notify::body::html"}%%TMPL:END%
+
+%{ text body }%
+%TMPL:DEF{"mentions::notify::body::text"}%
+%TMPL:P{"mentions::notify::greeting::text"}%
+%TMPL:P{
+  "%IF{"'%MENTIONED_PART%'=~'^(Text|Comment)$'" 
+    then="mentions::notify::text::%MENTIONED_PART%"
+    else="mentions::notify::text::default"
+  }%"
+}%
+%TRANSLATE{"See [_1]" args="%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%"}%
+
+%TMPL:P{"mentions::notify::closing::text"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::text::default"}%
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in '[_2]' of [_3]."
+  arg1="%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%"
+  arg2="%MENTIONED_PART%"
+  arg3="*%GETTOPICTITLE{"%WEB%.%TOPIC%"}%*"
+}%
+
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::text"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::text::Text"}%
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in [_2]."
+  arg1="%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%"
+  arg2="*%GETTOPICTITLE{"%WEB%.%TOPIC%"}%*"
+}%
+
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::text"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::text::Comment"}%
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in a comment of [_2]."
+  arg1="%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%"
+  arg2="*%GETTOPICTITLE{"%WEB%.%TOPIC%"}%*"
+}%
+
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::text"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::fragment::text"}%%MENTIONED_FRAGMENT%%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::greeting::text"}%%TRANSLATE{"Hello"}%,%TMPL:END%
+%TMPL:DEF{"mentions::notify::closing::text"}%%TRANSLATE{"Best Regards, Your Wiki Team."}%%TMPL:END%
+
+%{ html body }%
+%TMPL:DEF{"mentions::notify::body::html"}%
+%TMPL:P{"mentions::notify::greeting::html"}%
+%TMPL:P{
+  "%IF{"'%MENTIONED_PART%'=~'^(Text|Comment)$'" 
+    then="mentions::notify::html::%MENTIONED_PART%"
+    else="mentions::notify::html::default"
+  }%"
+}%
+<p>
+%TRANSLATE{"See [_1]" arg1="<a href='%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%'>%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%</a>"}%
+</p>
+%TMPL:P{"mentions::notify::closing::html"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::html::default"}%<p>
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in '[_2]' of [_3]."
+  arg1="<a href='%SCRIPTURL{"view" topic="%USERSWEB%.%MENTIONED_BY%"}%'>%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%</a>"
+  arg2="<b>%MENTIONED_PART%</b>"
+  arg3="<a href='%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%'>%GETTOPICTITLE{"%WEB%.%TOPIC%"}%</a>"
+}%
+</p>
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::html"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::html::Text"}%<p>
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in [_2]."
+  arg1="<a href='%SCRIPTURL{"view" topic="%USERSWEB%.%MENTIONED_BY%"}%'>%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%</a>"
+  arg2="<a href='%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%'>%GETTOPICTITLE{"%WEB%.%TOPIC%"}%</a>"
+}%
+</p>
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::html"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::html::Comment"}%<p>
+%TRANSLATE{"We would like to inform you that [_1] mentioned you in a comment of [_2]."
+  arg1="<a href='%SCRIPTURL{"view" topic="%USERSWEB%.%MENTIONED_BY%"}%'>%GETTOPICTITLE{"%USERSWEB%.%MENTIONED_BY%"}%</a>"
+  arg2="<a href='%SCRIPTURL{"view" topic="%WEB%.%TOPIC%"}%'>%GETTOPICTITLE{"%WEB%.%TOPIC%"}%</a>"
+}%
+</p>
+%TMPL:P{context="has_fragment" then="mentions::notify::fragment::html"}%
+%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::fragment::html"}%<blockquote>
+%MENTIONED_FRAGMENT%
+</blockquote>%TMPL:END%
+
+%TMPL:DEF{"mentions::notify::greeting::html"}%<b>%TRANSLATE{"Hello"}%</b>%TMPL:END%
+%TMPL:DEF{"mentions::notify::closing::html"}%<p>%TRANSLATE{"Best Regards, Your Wiki Team."}%</p>%TMPL:END%

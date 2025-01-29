@@ -1,0 +1,108 @@
+%META:TOPICINFO{author="ProjectContributor" date="1420222138" format="1.1" version="1"}%
+---+!! %TOPIC%
+%FORMFIELD{"Description"}%
+
+%TOC%
+
+---++ Usage
+
+This plugin introduces "mentioning" wiki users on the platform using the @ notation.
+You may create a link to a user profile page by writing
+
+<verbatim>@JohnDoe</verbatim>
+
+instead of 
+
+<verbatim>[[%USERSWEB%.JohnDoe][John Doe]]</verbatim>
+
+In addition all mentions are cashed in an SQL database and people are notified
+via email when they have beem mentioned by somebody else.
+
+---++ Macro
+
+The =%MENTIONS= macro can be used to retrieve all mentions on the current system.
+
+| *Parameter* | *Description* | *Default* |
+| =topic="..."= | topic to list mentions for | current topic |
+| =by="..."= | extract mentions by this user | current user|
+| =from="..."= | start time of the span to extract mentions | |
+| =to="..."= | end time of the span to extract mentions |  |
+| =sort="..."= | column to sort data | date |
+| =reverse="on/off"= | boolean switching sorting | off |
+| =skip="..."= | number of results to skip | 0 |
+| =limit="..."= | maximum number of rows to fetch |  |
+| =header="..."= | header string prepended to the output | |
+| =format="..."= | format string to render each row | |
+| =separator="..."= | separator string put between each output row | |
+| =footer="..."= | footer string to apped to the output | |
+
+Format strings may use the following set of variables:
+
+   * =$web=
+   * =$topic=
+   * =$wikiName=
+   * =$by=
+   * =$times=
+   * =$date=
+   * =$formatTime(...)=
+   * =$index=
+   * =$count=
+
+---++ Configuration
+
+---+++ Enable/Disable mentions notifications
+
+Notifications can be enabled/disabled globaly using a configuration setting =$Foswiki::cfg{MentionsPlugin}{EmailNotification}=.
+This default can be overwritten by a preference setting in <nop>SitePreferences, <nop>WebPreferences or per topic as required using
+
+<verbatim>   * Set MENTIONSPLUGIN_NOTIFICATION = on/off</verbatim>
+
+Note that no notifications will be send to the user mention him/herself.
+
+---+++ Enable/Disable notifications to yourself
+
+By default you won't receive a notification when you mention yourself in a content. For some reasons you might want to 
+re-enable them. 
+
+<verbatim>   * Set MENTIONSPLUGIN_NOTIFYSELF = on </verbatim>
+
+---+++ Extraction of mentions
+
+When a topic is saved the plugin will analyze the content and extract mentions. These can appear in
+
+   * text,
+   * formfields, 
+   * comments or
+   * metadata records.
+
+The default extraction mode can be configured in the plugins settings, or using the list setting
+
+<verbatim>   * Set MENTIONSPLUGIN_MODE = text, formfields, comments, metadata or all</verbatim>
+
+The =metadata= id refers to any custom metadata created by plugins such as [[https://foswiki.org/Extenions/MetaDataPlugin][MetaDataPlugin]].
+Comment are configurable separately as created by [[https://foswiki.org/Extensions/MetaCommentsPlugin][MetaCommentsPlugin]].
+
+
+---++ Installation Instructions
+%$INSTALL_INSTRUCTIONS%
+
+---++ Dependencies
+%$DEPENDENCIES%
+
+---++ Change History
+
+%TABLE{columnwidths="7em" tablewidth="100%"}%
+|  29 Jan 2025 | initial release |
+|  13 Nov 2021 | initial beta |
+
+%META:FORM{name="PackageForm"}%
+%META:FIELD{name="Author" title="Author" value="Michael Daum"}%
+%META:FIELD{name="Version" title="Version" value="%$VERSION%"}%
+%META:FIELD{name="Release" title="Release" value="%$RELEASE%"}%
+%META:FIELD{name="Description" title="Description" value="%$SHORTDESCRIPTION%"}%
+%META:FIELD{name="Copyright" value="2021-2025, Michael Daum, All Rights Reserved"}%
+%META:FIELD{name="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
+%META:FIELD{name="Repository" value="https://github.com/foswiki/%$ROOTMODULE%"}%
+%META:FIELD{name="Home" value="http://foswiki.org/Extensions/%$ROOTMODULE%"}%
+%META:FIELD{name="Support" value="http://foswiki.org/Support/%$ROOTMODULE%"}%
+%META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%$ROOTMODULE%"}%
