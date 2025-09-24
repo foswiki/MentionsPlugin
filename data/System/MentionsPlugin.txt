@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" date="1420222138" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" date="1758701850" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -23,6 +23,7 @@ via email when they have beem mentioned by somebody else.
 The =%MENTIONS= macro can be used to retrieve all mentions on the current system.
 
 | *Parameter* | *Description* | *Default* |
+| =web="..."= | web to list mentions for | current web |
 | =topic="..."= | topic to list mentions for | current topic |
 | =by="..."= | extract mentions by this user | current user|
 | =from="..."= | start time of the span to extract mentions | |
@@ -92,6 +93,8 @@ Comment are configurable separately as created by [[https://foswiki.org/Extensio
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  24 Sep 2025 | fixed sql injection vulnerability reported by Evgeny Kopytin (Positive Technologies) |
+|  27 Jun 2025 | fixed validation of parameter passed to =%MENTIONS= plugin  |
 |  29 Jan 2025 | initial release |
 |  13 Nov 2021 | initial beta |
 

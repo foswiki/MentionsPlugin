@@ -31,9 +31,11 @@ use Foswiki::Func ();
 use Foswiki::Time ();
 use Foswiki::Plugins ();
 use Foswiki::DBI ();
+use Foswiki::Sandbox ();
 use Foswiki::Iterator::DBIterator ();
 use Error qw(:try);
 use Digest::MD5 ();
+use Encode ();
 
 #use Data::Dump qw(dump); # disable on production
 
@@ -58,6 +60,7 @@ sub new {
     excludeWikiUser => $Foswiki::cfg{MentionsPlugin}{ExcludeWikiUser} // '^(AdminUser)$',
     debug => $Foswiki::cfg{MentionsPlugin}{Debug} // 0,
     mode => $Foswiki::cfg{MentionsPlugin}{Mode} // 'all',
+    mentionsFormat => $Foswiki::cfg{MentionsPlugin}{MentionsFormat} // '<a href="%url%" class="mention %class%">%title%</a>',
     @_
   }, $class);
 
@@ -129,12 +132,15 @@ sub formatMention {
     unless Foswiki::Func::topicExists($web, $wikiName);
 
   my $title = Foswiki::Func::getTopicTitle($web, $wikiName);
-
-  return "@".$wikiName
-    unless Foswiki::Func::getCanonicalUserID($wikiName);
-
+  my $class = Foswiki::Func::getCanonicalUserID($wikiName) ? "jqUserTooltip" : "foswikiAlert";
   my $url = Foswiki::Func::getScriptUrlPath($web, $wikiName, "view");
-  return "<a href='$url' class='mention jqUserTooltip'>$title</a>";
+
+  my $format = $this->{mentionsFormat};
+  $format =~ s/\%url%/$url/g;
+  $format =~ s/\%class%/$class/g;
+  $format =~ s/\%title%/$title/g;
+
+  return $format;
 }
 
 =begin TML
@@ -150,40 +156,63 @@ sub MENTIONS {
 
   $this->writeDebug("called MENTIONS()");
 
-  my $theWeb;
-  my $theTopic;
+  my %opts = ();
 
-  ($theWeb, $theTopic) = Foswiki::Func::normalizeWebTopicName($web, $params->{topic}) 
-    if defined $params->{topic} && $params->{topic} ne '' && $params->{topic} ne '*';
+  my $theWeb = $params->{web} // $web;
+  my $theTopic = $params->{topic} // $topic;
+
+  if ($theWeb && $theWeb eq '*') {
+    $theWeb = undef;
+  } else {
+    $theWeb = Foswiki::Sandbox::validateTopicName($theWeb)
+  }
+
+  if ($theTopic && $theTopic eq '*') {
+    $theTopic = undef;
+  } else {
+    $theTopic = Foswiki::Sandbox::validateTopicName($theTopic)
+  }
+
+  ($theWeb, $theTopic) = Foswiki::Func::normalizeWebTopicName($theWeb, $theTopic)
+    if $theWeb && $theTopic;
 
   $theWeb =~ s/\//./g if defined $theWeb;
 
+  $opts{web} = $theWeb if $theWeb;
+  $opts{topic} = $theTopic if $theTopic;
+
   my $wikiName = $params->{wikiname};
-  $wikiName = undef if defined($wikiName) && $wikiName eq '*';
+  if ($wikiName && $wikiName eq '*') {
+    $wikiName = undef;
+  } else {
+    $wikiName = _sanitizeString($wikiName);
+  }
+  $opts{wikiName} = $wikiName if $wikiName;
+
   my $self = Foswiki::Func::getWikiName();
   my $by = $params->{by} // $self;
-  $by = undef if $by eq '*';
+
+  if ($by eq '*') {
+    $by = undef;
+  } else {
+    $by = _sanitizeString($by);
+  }
+  $opts{mentionedBy} = $by if $by;
 
   my $from = _parseTime($params->{since} // $params->{from});
   my $to = _parseTime($params->{until} // $params->{to});
+  $opts{from} = $from if $from;
+  $opts{to} = $to if $to;
 
   $this->writeDebug("... web=".($theWeb//'undef').", topic=".($theTopic//'undef').", wikiName=".($wikiName//'undef').", by=".($by//'undef').", from=".($from//'undef').", to=".($to//'undef'));
 
-  my $order = $params->{sort} // "date";
-  $order .= " desc" if Foswiki::Func::isTrue($params->{reverse}, 0);
+  $opts{order} = _sanitizeString($params->{sort}) // "date";
+  $opts{order} .= " desc" if Foswiki::Func::isTrue($params->{reverse}, 0);
 
   my $it;
   my $error;
   try {
-    $it = $this->eachMention(
-      web => $theWeb,
-      topic => $theTopic,
-      wikiName => $wikiName,
-      mentionedBy => $by,
-      from => $from,
-      to => $to,
-      order => $order,
-    );
+    $it = $this->eachMention(%opts);
   } catch Error with {
     $error = shift;
     $error =~ s/ at .*$//;
@@ -321,7 +350,7 @@ sub sendNotification {
 
   my @emails = Foswiki::Func::wikinameToEmails($record->{wikiName});
 
-  if (@emails) {
+  if (@emails && $emails[0]) {
     $this->writeDebug("... emails=@emails");
   } else {
     $this->writeDebug("... no emails found for $record->{wikiName}");
@@ -740,6 +769,7 @@ sub createRecord {
   $part //= "";
   $id //= "";
 
+  $fragment = Encode::encode_utf8($fragment);
   $this->writeDebug("called createRecord($wikiName, $part, $id, $fragment)");
 
   return {
@@ -764,21 +794,32 @@ sub eachMention {
 
   #$this->writeDebug("called eachMention");
 
-  my @order = ();
   my @where = ();
+  my @values = ();
 
-  while (my ($k, $v) = each %params) {
+  foreach my $k (sort keys %params) {
+    next if $k eq 'sort' || $k eq 'order';
+
+    my $v = $params{$k};
     next unless defined $v;
 
-    if ($k eq 'sort' || $k eq 'order') {
-      push @order, $v;
-    } elsif ($k eq 'from') {
-      push @where, "date >= $v" if defined $v;
+    if ($k eq 'from') {
+      push @where, "date >= ?";
+      push @values, $v;
     } elsif ($k eq 'to') {
-      push @where, "date <= $v" if defined $v;
+      push @where, "date <= ?";
+      push @values, $v;
     } else {
-      push @where, "$k='$v'" if defined $v;
+      push @where, "$k=?";
+      push @values, $v;
     }
+  }
+
+  my @order = ();
+  my $order = $params{sort} // $params{order};
+  if ($order) {
+    push @order, "?";
+    push @values, $order;
   }
 
   my $stm = "SELECT * FROM MentionsPlugin_mentions" .
@@ -787,7 +828,7 @@ sub eachMention {
 
   #$this->writeDebug("... stm=$stm");
 
-  return Foswiki::Iterator::DBIterator->new($this->db->handler, $stm);
+  return Foswiki::Iterator::DBIterator->new($this->db->handler, $stm, \@values);
 }
 
 =begin TML
@@ -1051,6 +1092,16 @@ sub _plainify {
   $text =~ s/#//g;          # remove any explicit numbering stuff
 
   return $text;
+}
+
+sub _sanitizeString {
+  my $str = shift;
+
+  return unless defined $str;
+
+  $str =~ s/[^\w\s\.\/\%_\-]//g;
+
+  return $str;
 }
 
 1;

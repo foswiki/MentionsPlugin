@@ -24,4 +24,8 @@ $Foswiki::cfg{MentionsPlugin}{ExcludeTopic} = '^(WebAtom|WebRss|WebSearch.*|WebC
 # A regular expression of WikiUsers that are not notified or don't trigger notifications
 $Foswiki::cfg{MentionsPlugin}{ExcludeWikiUser} = '^(AdminUser|WikiGuest)$';
 
+# **STRING*
+# Format string to customize the mentions link to a user profile page
+$Foswiki::cfg{MentionsPlugin}{MentionsFormat} = '<a href="%url%" class="mention %class%">%title%</a>';
+
 1;

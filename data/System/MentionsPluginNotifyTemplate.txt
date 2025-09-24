@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1701710268" format="1.1" reprev="8" version="10"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1758701850" format="1.1"  version="1"}%
 %META:TOPICPARENT{name="MentionsPlugin"}%
 %{ WARNING: Please do not modify this template. Create a skin overlay instead. }%
 
@@ -18,6 +18,7 @@
 %TMPL:DEF{"mentions::notify::header::subject"}%Subject: %WIKITOOLNAME% - %GETTOPICTITLE{"%WEB%.%HOMETOPIC%"}% - %TRANSLATE{"You have been mentioned in [_1]" args="%GETTOPICTITLE{"%WEB%.%TOPIC%"}%"}%%TMPL:END%
 %TMPL:DEF{"mentions::notify::header::priority"}%X-Priority: 1%TMPL:END%
 %TMPL:DEF{"mentions::notify::header::misc"}%Auto-Submitted: auto-generated
+X-Foswiki-Ref: %WEB%.%TOPIC%
 MIME-Version: 1.0
 Content-Type: multipart/alternative; boundary="=_=0i0k0i0w0s0o0fXuOi0E0A"
 %TMPL:END%
