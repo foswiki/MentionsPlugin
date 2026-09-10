@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# MentionsPlugin is Copyright (C) 2021-2025 Michael Daum http://michaeldaumconsulting.com
+# MentionsPlugin is Copyright (C) 2021-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,21 +29,14 @@ sub getDefinition {
             mentionedBy VARCHAR(255) NOT NULL,
             web VARCHAR(255) NOT NULL,
             topic VARCHAR(255) NOT NULL,
-            times INTEGER DEFAULT 1
-    ) DEFAULT CHARSET=utf8 DEFAULT COLLATE utf8_bin",
+            part VARCHAR(255) NOT NULL,
+            fingerPrint VARCHAR(255) NOT NULL
+    ) DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_bin",
 
-    "CREATE UNIQUE INDEX IF NOT EXISTS %prefix%idx_unique_mentions ON %prefix%mentions (wikiName, mentionedBy, web, topic)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_wikiName ON %prefix%mentions (wikiName)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_date ON %prefix%mentions (date)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_where ON %prefix%mentions (web, topic)",
-  ], [
-    "DROP INDEX %prefix%idx_unique_mentions ON %prefix%mentions",
-    "ALTER TABLE %prefix%mentions ADD column part VARCHAR(255) NOT NULL",
-  ], [
-    "ALTER TABLE %prefix%mentions ADD column fingerPrint VARCHAR(255) NOT NULL",
-    "ALTER TABLE %prefix%mentions DROP column times",
-  ], [
-    "ALTER TABLE %prefix%mentions CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin",
+
   ]];
 }
 

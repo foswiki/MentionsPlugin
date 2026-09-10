@@ -7,6 +7,7 @@ lib/Foswiki/Plugins/MentionsPlugin/DEPENDENCIES 0644
 lib/Foswiki/Plugins/MentionsPlugin/MANIFEST 0644
 lib/Foswiki/Plugins/MentionsPlugin.pm 0644
 lib/Foswiki/Plugins/MentionsPlugin/Schema/MariaDB.pm 0644
+lib/Foswiki/Plugins/MentionsPlugin/Schema/PostgreSQL.pm 0644
 lib/Foswiki/Plugins/MentionsPlugin/Schema/MySQL.pm 0644
 lib/Foswiki/Plugins/MentionsPlugin/Schema.pm 0644
 lib/Foswiki/Plugins/MentionsPlugin/Schema/SQLite.pm 0644

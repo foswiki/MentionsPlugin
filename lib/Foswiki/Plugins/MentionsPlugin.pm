@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# MentionsPlugin is Copyright (C) 2021-2025 Michael Daum http://michaeldaumconsulting.com
+# MentionsPlugin is Copyright (C) 2021-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ use warnings;
 
 use Foswiki::Func ();
 
-our $VERSION = '1.30';
+our $VERSION = '1.40';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'Mentions for Foswiki';
 our $LICENSECODE = '%$LICENSECODE%';

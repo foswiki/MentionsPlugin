@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# MentionsPlugin is Copyright (C) 2021-2025 Michael Daum http://michaeldaumconsulting.com
+# MentionsPlugin is Copyright (C) 2021-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -29,19 +29,14 @@ sub getDefinition {
             mentionedBy TEXT NOT NULL,
             web TEXT NOT NULL,
             topic TEXT NOT NULL,
-            times INTEGER DEFAULT 1
+            part TEXT,
+            fingerPrint TEXT
     )",
 
-    "CREATE UNIQUE INDEX IF NOT EXISTS %prefix%idx_unique_mentions ON %prefix%mentions (wikiName, mentionedBy, web, topic)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_wikiName ON %prefix%mentions (wikiName)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_date ON %prefix%mentions (date)",
     "CREATE INDEX IF NOT EXISTS %prefix%idx_where ON %prefix%mentions (web, topic)",
-  ], [
-    "DROP INDEX IF EXISTS %prefix%idx_unique_mentions",
-    "ALTER TABLE %prefix%mentions ADD part TEXT",
-  ], [
-    "ALTER TABLE %prefix%mentions ADD column fingerPrint TEXT",
-    "ALTER TABLE %prefix%mentions DROP column times",
+
   ]];
 };
 

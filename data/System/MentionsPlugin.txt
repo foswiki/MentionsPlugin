@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" date="1758701850" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" date="1789036615" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -42,6 +42,9 @@ Format strings may use the following set of variables:
    * =$web=
    * =$topic=
    * =$wikiName=
+   * =$firstName=
+   * =$middleName=
+   * =$lastName=
    * =$by=
    * =$times=
    * =$date=
@@ -93,6 +96,9 @@ Comment are configurable separately as created by [[https://foswiki.org/Extensio
 ---++ Change History
 
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  10 Sep 2026 | added =$firstName= , =$middleName=, =$lastName= format tokens; \
+                 improved support for <nop>PostgreSQL; \
+                 solidified database schema; \
 |  24 Sep 2025 | fixed sql injection vulnerability reported by Evgeny Kopytin (Positive Technologies) |
 |  27 Jun 2025 | fixed validation of parameter passed to =%MENTIONS= plugin  |
 |  29 Jan 2025 | initial release |
@@ -103,7 +109,7 @@ Comment are configurable separately as created by [[https://foswiki.org/Extensio
 %META:FIELD{name="Version" title="Version" value="%$VERSION%"}%
 %META:FIELD{name="Release" title="Release" value="%$RELEASE%"}%
 %META:FIELD{name="Description" title="Description" value="%$SHORTDESCRIPTION%"}%
-%META:FIELD{name="Copyright" value="2021-2025, Michael Daum, All Rights Reserved"}%
+%META:FIELD{name="Copyright" value="2021-2026, Michael Daum, All Rights Reserved"}%
 %META:FIELD{name="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Repository" value="https://github.com/foswiki/%$ROOTMODULE%"}%
 %META:FIELD{name="Home" value="http://foswiki.org/Extensions/%$ROOTMODULE%"}%

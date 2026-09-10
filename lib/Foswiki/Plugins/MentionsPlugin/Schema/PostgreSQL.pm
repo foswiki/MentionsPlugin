@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# MentionsPlugin is Copyright (C) 2021-2026 Michael Daum http://michaeldaumconsulting.com
+# MentionsPlugin is Copyright (C) 2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
 # GNU General Public License for more details, published at
 # http://www.gnu.org/copyleft/gpl.html
 
-package Foswiki::Plugins::MentionsPlugin::Schema::MySQL;
+package Foswiki::Plugins::MentionsPlugin::Schema::PostgreSQL;
 
 use strict;
 use warnings;
@@ -33,9 +33,9 @@ sub getDefinition {
             fingerPrint VARCHAR(255) NOT NULL
     ) DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_bin",
 
-    "CREATE INDEX %prefix%idx_wikiName ON %prefix%mentions (wikiName)",
-    "CREATE INDEX %prefix%idx_date ON %prefix%mentions (date)",
-    "CREATE INDEX %prefix%idx_where ON %prefix%mentions (web, topic)",
+    "CREATE INDEX IF NOT EXISTS %prefix%idx_wikiName ON %prefix%mentions (wikiName)",
+    "CREATE INDEX IF NOT EXISTS %prefix%idx_date ON %prefix%mentions (date)",
+    "CREATE INDEX IF NOT EXISTS %prefix%idx_where ON %prefix%mentions (web, topic)",
 
   ]];
 }

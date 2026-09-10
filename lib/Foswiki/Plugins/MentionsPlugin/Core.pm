@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, https://foswiki.org/
 #
-# MentionsPlugin is Copyright (C) 2021-2025 Michael Daum http://michaeldaumconsulting.com
+# MentionsPlugin is Copyright (C) 2021-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -60,9 +60,14 @@ sub new {
     excludeWikiUser => $Foswiki::cfg{MentionsPlugin}{ExcludeWikiUser} // '^(AdminUser)$',
     debug => $Foswiki::cfg{MentionsPlugin}{Debug} // 0,
     mode => $Foswiki::cfg{MentionsPlugin}{Mode} // 'all',
-    mentionsFormat => $Foswiki::cfg{MentionsPlugin}{MentionsFormat} // '<a href="%url%" class="mention %class%">%title%</a>',
+    mentionsFormat => $Foswiki::cfg{MentionsPlugin}{MentionsFormat} // '<a href="$url" class="mention $class" data-wiki-name="$wikiName">$title</a>',
     @_
   }, $class);
+
+  # old format
+  foreach my $key (qw( url class wikiName title firstName middleName lastName)) {
+    $this->{mentionsFormat} =~ s/%$key%/\$$key/g;
+  }
 
   return $this;
 }
@@ -131,16 +136,63 @@ sub formatMention {
   return "@".$wikiName
     unless Foswiki::Func::topicExists($web, $wikiName);
 
+  my $format = $this->{mentionsFormat};
+
+  my $info;
+  $info = $this->getUserInfo($wikiName) if $format =~ /\$(first|middel|last)name\b/;
+
   my $title = Foswiki::Func::getTopicTitle($web, $wikiName);
   my $class = Foswiki::Func::getCanonicalUserID($wikiName) ? "jqUserTooltip" : "foswikiAlert";
   my $url = Foswiki::Func::getScriptUrlPath($web, $wikiName, "view");
 
-  my $format = $this->{mentionsFormat};
-  $format =~ s/\%url%/$url/g;
-  $format =~ s/\%class%/$class/g;
-  $format =~ s/\%title%/$title/g;
+  $format =~ s/\$url\b/$url/g;
+  $format =~ s/\$class\b/$class/g;
+  $format =~ s/\$title\b/$title/g;
+  $format =~ s/\$wikiName\b/$wikiName/g;
+
+  if ($info) {
+    $format =~ s/\$firstName\b/$info->{firstName}/g;
+    $format =~ s/\$middleName\b/$info->{middleName}/g;
+    $format =~ s/\$lastName\b/$info->{lastName}/g;
+  } else {
+    $format =~ s/\$(first|middle|last)Name\b//g;
+  }
 
   return $format;
+}
+
+sub getUserInfo {
+  my ($this, $wikiName) = @_;
+
+  return unless $wikiName;
+
+  my %info = (
+    firstName => $wikiName,
+    middleName => "",
+    lastName => "",
+  );
+
+  my $string = Foswiki::Func::spaceOutWikiWord($wikiName);
+  if ($string =~ /^(.*?) (?:(.*?) )?(.*)$/) {
+    $info{firstName} = $1;
+    $info{middleName} = $2 // "";
+    $info{lastName} = $3;
+  } 
+
+  if (Foswiki::Func::getContext()->{PluggableAuthEnabled}) {
+    require Foswiki::PluggableAuth;
+    my $auth = Foswiki::PluggableAuth->new();
+    my $user = $auth->findUser(wikiName => $wikiName);
+    if ($user) {
+      $info{firstName} = $user->prop("firstName");
+      $info{middleName} = $user->prop("middleName");
+      $info{lastName} = $user->prop("lastName");
+    } else {
+      #print STDERR "user not found '$wikiName'\n";
+    }
+  }
+
+  return \%info;
 }
 
 =begin TML
@@ -230,8 +282,12 @@ sub MENTIONS {
     next unless Foswiki::Func::checkAccessPermission("VIEW", $self, undef, $row->{topic}, $row->{web});
 
     #$this->writeDebug("found row".dump($row));
- 
+
     my $line = $params->{format} // '$wikiName was mentioned in [[$web.$topic]] by $by at $formatTime($date) <br/>';
+
+    my $info;
+    $info = $this->getUserInfo($row->{wikiName}) if $line =~ /\$(first|middel|last)name\b/;
+
     $line =~ s/\$index\b/$index/g;
     $line =~ s/\$wikiName\b/$row->{wikiName}/g;
     $line =~ s/\$by\b/$row->{mentionedBy}/g;
@@ -241,6 +297,14 @@ sub MENTIONS {
     $line =~ s/\$date\b/$row->{date}/g;
     $line =~ s/\$fingerPrint\b/$row->{fingerPrint}/g;
     $line =~ s/\$formatTime\((\d+?)(?:, *(.*?))?\)/_formatTime($1, $2)/ge;
+
+    if ($info) {
+      $line =~ s/\$firstName\b/$info->{firstName}/g;
+      $line =~ s/\$middleName\b/$info->{middleName}/g;
+      $line =~ s/\$lastName\b/$info->{lastName}/g;
+    } else {
+      $line =~ s/\$(first|middle|last)Name\b//g;
+    }
  
     push @result, $line if $line ne "";
     $count++;
@@ -348,7 +412,7 @@ sub sendNotification {
     return;
   }
 
-  my @emails = Foswiki::Func::wikinameToEmails($record->{wikiName});
+  my @emails = grep {!/^noreply\@/} Foswiki::Func::wikinameToEmails($record->{wikiName});
 
   if (@emails && $emails[0]) {
     $this->writeDebug("... emails=@emails");
@@ -1064,7 +1128,7 @@ sub _extractTextFragment {
 
   my $frag = "";
 
-  if ($text =~ /([^\.\?\!\n]*?\b$word\b[^\.\?\!]*(?:[\.\?\!]|$))/g) {
+  if (defined $text && $text =~ /([^\.\?\!\n]*?\b$word\b[^\.\?\!]*(?:[\.\?\!]|$))/g) {
     $frag = $1;
     $frag =~ s/^\s+//;
     $frag =~ s/\s+$//;
@@ -1076,6 +1140,8 @@ sub _extractTextFragment {
 
 sub _plainify {
   my ($text) = @_;
+
+  return unless defined $text;
 
   $text =~ s/<nop>//g;    # remove foswiki pseudo markup
   $text =~ s/<!--.*?-->//gs;    # remove all HTML comments
